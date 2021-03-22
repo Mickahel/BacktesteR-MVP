@@ -51,7 +51,6 @@ backtestStrategy = function (portfolio, strategy, financialData){
     #'[6) check if the order is the opposite of the signal]
      else if (!isOrderOfThisType(ordersOpen, orderType)){
       #'[7) close the opposite order]
-      browser()
       portfolio = portfolio$closeOrder(orderIndex,todayPrice, todayDate)
       #'[8) open new order]
       orderPlaced = createOrder(

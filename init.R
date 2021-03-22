@@ -4,7 +4,7 @@ graphics.off()
 Sys.setlocale(locale = "English")
 
 # Input options
-path = "C:\\Users\\Michelangelo\\Desktop\\Projects\\BacktesteR-MVP\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
+path = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
 initialPortfolioValue = 10000
 percentageOfPortfolioForEachInvestment=0.1
 
@@ -21,7 +21,7 @@ source("analytics.R")
 source("./indicators/RSIModel.R")
 
 #  strategy
-singleRSIStrat = singleRSIStrategy$new(); 
+strategy = singleRSIStrategy$new(); 
 # data input from CSV, InvestingUSA
 rawData = readDataFromCSV(path)
 
@@ -30,7 +30,7 @@ rawData = readDataFromCSV(path)
 dataOutput = cleanAndValidateData(rawData)
 cleanData = dataOutput$data
 missingValues = dataOutput$missingValues
-plotRSI(indicatorsParameters, cleanData)
+
 
 #plot(cleanData$Date,cleanData$Price, type="l")
 # import strategies
@@ -47,17 +47,18 @@ portfolio = portfolioClassGenerator$new(
     )
   );
 
-# Strategy Selection - select the strategy
-strategy = singleRSIStrat
+
 
 # backtest
 strategy$addIndicators(indicatorsParameters)
 
 
 portfolio = backtestStrategy(portfolio, strategy, cleanData)
+plotRSI(indicatorsParameters, cleanData)
 portfolio$value
 portfolio$orders
 portfolio$valueHistory
+missingValues
 # Analysis of the data of the backtest
 # TODO portfolio$analytics = analyticsModel(portfolio);
 

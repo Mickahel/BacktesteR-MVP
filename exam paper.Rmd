@@ -1,0 +1,210 @@
+---
+title: "Exam Paper - Backtester Project"
+author: "Michelangelo De Francesco"
+date: "22/3/2021"
+output: 
+  html_document:
+    toc: true
+#    toc_floats: true
+    number_section: yes
+    theme: united
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Objective
+The objective of the project is to create a simple **backtester** that is able to test the performance of trading systems, given as an input a `CSV` downloaded from [Investing USA](https://www.investing.com/).
+
+
+## The project, in Practice 
+In this project, a simple backtesting engine has been created and a simple strategy based on [Relative Strength Indicator](https://www.investopedia.com/terms/r/rsi.asp) has been used as a practical example to show the effectiveness of the backtester.
+
+Regarding the RSI Strategy, it relies on simple Technical Analysis and on the concept of over-sold and over-bought: the strategy will stay in `IDLE` when the indicator is between the upper and the lower boundaries, while it will recommend to `BUY` or `SELL` when it will be respectively below the lower level and  above the upper one.
+
+## Notes on the Project
+1. It's written in vanilla R language, external packages has not been used as I aimed to code everything from scratch instead of using pre-built functions
+2. I have made extensive use of Object Oriented Programming in R Language (i.e. `Indicators`, `Portfolio` and `Strategies` are Objects, while `Orders` are rows in a `data.frame` due to motivations that will be explained in the following sections)
+
+# Architecture Description
+The Architectural design behind this project is based on Object Oriented Programming, therefore, as already said, some components of the project are Objects created by their respective Classes.
+
+The main reason behind this choice is the need for entities from which I could be able to call attributes (variables associated to the entity) and methods.
+For instance, regarding the portfolio, I wanted to have an entity that represented the portfolio itself and from which I could have the value of it, but also functions such as `addOrder` or `closeOrder`.
+
+Object Oriented Programming is substantiated by the creation of classes, which in are are declared using the function `setRefClass()` which creates an S4 class (an updated and more complete version of the S3 classes as it provides the possibility to create custom functions and use the object itself inside the function).
+
+Thanks to the simple reproducibility of objects due to classes (in fact, they can be considered as blueprints of objects), I have decided to adopt this data type also for `Indicators` and `Strategies` for scalability reasons and for the motivations already stated.
+
+## Note on architectural decision on Order Entity
+
+The `Order` Entity, which represents a buy or sell order, is not an object although it would be eligible.
+The motivation is that in R Language, Objects can be stored in vectors, but they instantly lose their parameters and methods as shown below.
+```{r}
+gen <- setRefClass("myRefClass", 
+                   fields=list(aa="character"),
+                   methods=list(
+                     hi= function(){
+                       cat("hi")
+                     }
+                   )
+)
+x <- gen$new(aa="nome")
+y <- gen$new(aa="bana")
+a<-c(x,y)
+
+b<-a[1]
+b$aa # NULL
+#b$hi() throws an error
+a[1]$aa # NULL
+```
+
+Nonetheless, the main idea was to store all the orders inside a vector of the portfolio.
+In order to work around the problem, it has been treated as a simple row in a data.frame.
+
+
+# How to Start the Project
+In order to start the project, it is mandatory to:
+
+1. download historical data from [Investing USA](https://www.investing.com/) in CSV, such as [Apple Stock](https://www.investing.com/equities/apple-computer-inc-historical-data)
+2. change in the file `init.R` the input parameters 
+  a.`path`, which is the path of the `.CSV`. Note: you can use both relative and absolute path. 
+  b. `initialPortfolioValue`, which is the amount of money in the portfolio at the beginning of the simulation.
+  c. `percentageOfPortfolioForEachInvestment`, which is the percentage of the portfolio which is invested in each trade.
+  d. `indicatorsParameters`: the parameters chosen for the strategy, that are in this case respectively: the periods of the RSI, the lower bound and the upper 60
+ 
+An example is provided below:
+
+```{r eval=FALSE}
+path = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
+# or using absolute path
+# path = "C:\\Users\\Michelangelo\\Desktop\\Projects\\BacktesteR-MVP\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
+initialPortfolioValue = 10000
+percentageOfPortfolioForEachInvestment=0.1
+
+indicatorsParameters= c(8, 40, 60)
+```
+
+After having the parameters set, start the code in `init.R` line-by-line or as a whole.
+
+# Backtester Description
+
+In this section, it will be shown how the code works under the hood and will be explained the logical steps of the backtester starting from the first line of `init.R`.
+
+## Initial Setup
+
+A new RSI Strategy Object is created from the `singleRSIStrategy` Class after setting the environment and the input paramenters.
+
+It is important to not that the English language using `Sys.setlocale(locale = "English")` in order to parse the dates present inside the CSV.
+
+```{r Starting environment, Setting Input Parameters and Strategy, message=FALSE, warning=FALSE}
+rm(list=ls())
+graphics.off()
+Sys.setlocale(locale = "English")
+
+# Input options
+path = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
+initialPortfolioValue = 10000
+percentageOfPortfolioForEachInvestment=0.1
+indicatorsParameters= c(8, 40, 60)
+
+# Add paths
+source("dataInputFunctions.R")
+source("portfolioModel.R")
+source("singleRSIStrategyModel.R")
+source("orderFunctions.R")
+source("backtest.R")
+source("analytics.R")
+source("./indicators/RSIModel.R")
+
+strategy = singleRSIStrategy$new(); 
+```
+
+Then, the process of data retrieving and cleaning starts:
+1. The CSV parsed and stored into a `data.frame`
+2. The data is then cleaned from missing values( if in the row is present a `NA` value, the row is removed) and is sorted by date
+3. Finally, the data is indexed
+
+```{r Reading and Cleaning Data}
+rawData = readDataFromCSV(path)
+dataOutput = cleanAndValidateData(rawData)
+cleanData = dataOutput$data
+missingValues = dataOutput$missingValues
+missingValues
+```
+
+Moreover, the Portfolio is created with its initial values; valueHistory is a `data.frame` where the chages of the portfolio value are stored.
+
+```{r Creating Portfolio}
+portfolio = portfolioClassGenerator$new(
+  value=initialPortfolioValue, 
+  orders = data.frame(),
+  valueHistory = data.frame(
+    Date=c(cleanData$Date[1]),
+    Value=c(initialPortfolioValue),
+    Change=c(NA)
+    )
+  );
+```
+
+The last step before starting the backtest consists in adding the parameters of the RSI to the strategy, in fact, the objective of the function `addIndicators(values)` is to create a RSI object (with input parameters the ones that has been chosen before) as a variable inside the strategy and use it to produce signals.
+
+```{r Adding the RSI Indicator to Strategy}
+strategy$addIndicators(indicatorsParameters)
+```
+
+## A note on Strategy Entity and RSI Entity
+Before diving deep into the Backtest, it is important to understand the structure and the usefulness of the Strategy entity.
+This entity has the purpose, as in normal Trading systems, of checking for signals and inform about the amount of data(starting the count from the day before the day considered) needed by the indicator to compute those signals.
+In fact, RSI indicator, as well as most of all Technical indicators, need a certain amount of data to create a meaningful result and not errors(for instance, an indicator that expects 14 parameters, if provided with just 6, would throw an error or an unfaithful result).
+
+
+$$
+RSI Value = 100-\frac{100}{1+\frac{Average Gain}{Average Loss}}
+$$
+Regarding RSI Entity, it's important,when computing its formula, to take into account the event by which negative or positive returns are not available for the data (maybe due to a strong uptrend or downtrend).
+In order to deal with this problem, the value 0 will be assigned to the potential void variable.
+```{r eval=FALSE}
+#[...Code...]
+if (sum(returns>=0)==0) {
+upReturns = 0
+}
+else{
+  upReturns = returns[returns>=0]
+}
+if (sum(returns<0)==0){
+ downReturns = 0
+}
+else{
+  downReturns = returns[returns<0];
+}
+#[...Code...]
+```
+
+## Backtester 
+
+### Backtester Logic
+![chart of Backtester Logic](chart of backtester.png)
+
+
+# Scaling with New Strategies and Indicators
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
