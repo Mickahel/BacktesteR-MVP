@@ -4,7 +4,8 @@ graphics.off()
 Sys.setlocale(locale = "English")
 
 # Input options
-path = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
+#path = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
+path = ".\\inputCSVData\\AAPL Historical Data.csv"
 initialPortfolioValue = 10000
 percentageOfPortfolioForEachInvestment=0.1
 

@@ -8,11 +8,13 @@ portfolioClassGenerator = setRefClass("portfolioClass",
                    ),
                    methods = list(
                        closeAllOrders = function(todayPrice, todayDate){
-                         for (ordersIndex in 1: nrow(.self$orders)){
-                           if (.self$orders[ordersIndex,]$status =="OPEN"){
-                            .self$closeOrder(ordersIndex, price,date)
+                         if (nrow(.self$orders)>0){
+                           for (ordersIndex in 1: nrow(.self$orders)){
+                             if (.self$orders[ordersIndex,]$status =="OPEN"){
+                              .self$closeOrder(ordersIndex, price,date)
+                             }
                            }
-                          }
+                         }
                        },
                        
                       addOrder=function(order){
@@ -39,7 +41,6 @@ portfolioClassGenerator = setRefClass("portfolioClass",
                       },
                       
                       checkForOrdersToClose=function(price, date){
-
                         if (nrow(.self$orders)>0){
                           for (ordersIndex in 1: nrow(.self$orders)){
                             #check for orders open

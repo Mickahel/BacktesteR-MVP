@@ -8,7 +8,6 @@ backtestStrategy = function (portfolio, strategy, financialData){
     dataInputForStrategy = financialData[(dateIndex-amountOfDataFromToday):dateIndex-1,]
     todayPrice = financialData$Price[dateIndex]
     todayDate = financialData$Date[dateIndex]
-
     # For Each Day Check if you can open or close an order
     #'[0) check if you can close orders that go in take profit or stop loss]
 
