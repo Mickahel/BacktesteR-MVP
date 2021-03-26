@@ -67,12 +67,6 @@ backtestStrategy = function (portfolio, strategy, financialData){
 
 
 isOrderOfThisType =function(order,orderType){
-
-  if (order$type == orderType){
-    return(TRUE)
+    return (order$type == orderType)
   }
-  else{
-    return(FALSE)
-  }
-}
 

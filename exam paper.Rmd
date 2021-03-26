@@ -2,13 +2,11 @@
 title: "Exam Paper - Backtester Project"
 author: "Michelangelo De Francesco"
 date: "22/3/2021"
-output: 
+output:
   html_document:
-    toc: true
-#    toc_floats: true
+    toc: yes
     number_section: yes
     theme: united
-  
 ---
 
 ```{r setup, include=FALSE}
@@ -66,11 +64,14 @@ In order to work around the problem, it has been treated as a simple row in a da
 
 
 # How to Start the Project
-In order to start the project, it is mandatory to:
+
+The project is already set up and it's possible to run it without any change: run the `init.R` code line by line or as a whole.
+
+If, instead, it is needed to change the input parameters, it is mandatory to:
 
 1. download historical data from [Investing USA](https://www.investing.com/) in CSV, such as [Apple Stock](https://www.investing.com/equities/apple-computer-inc-historical-data)
 2. change in the file `init.R` the input parameters 
-  a.`path`, which is the path of the `.CSV`. Note: you can use both relative and absolute path. 
+  a.`pathOfFinancialData`, which is the path of the `.CSV`. Note: you can use both relative and absolute path. 
   b. `initialPortfolioValue`, which is the amount of money in the portfolio at the beginning of the simulation.
   c. `percentageOfPortfolioForEachInvestment`, which is the percentage of the portfolio which is invested in each trade.
   d. `indicatorsParameters`: the parameters chosen for the strategy, that are in this case respectively: the periods of the RSI, the lower bound and the upper 60
@@ -105,7 +106,7 @@ graphics.off()
 Sys.setlocale(locale = "English")
 
 # Input options
-path = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
+pathOfFinancialData = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
 initialPortfolioValue = 10000
 percentageOfPortfolioForEachInvestment=0.1
 indicatorsParameters= c(8, 40, 60)
@@ -128,7 +129,7 @@ Then, the process of data retrieving and cleaning starts:
 3. Finally, the data is indexed
 
 ```{r Reading and Cleaning Data}
-rawData = readDataFromCSV(path)
+rawData = readDataFromCSV(pathOfFinancialData)
 dataOutput = cleanAndValidateData(rawData)
 cleanData = dataOutput$data
 missingValues = dataOutput$missingValues
@@ -155,8 +156,65 @@ The last step before starting the backtest consists in adding the parameters of 
 strategy$addIndicators(indicatorsParameters)
 ```
 
-## A note on Strategy Entity and RSI Entity
-Before diving deep into the Backtest, it is important to understand the structure and the usefulness of the Strategy entity.
+## Backtest
+The backtest starts and the portfolio is returned.
+In this phase, orders and signals are computed as it will be explained in the following sections.
+```{r Backtest}
+portfolio = backtestStrategy(portfolio, strategy, cleanData)
+```
+
+## Output and Analytics
+In this section, a series of output, metrics and analytics is provided
+
+Plot of price and returns of the timeseries analyzed:
+```{r echo=FALSE}
+plot(cleanData$Date, cleanData$Price, type="l", xlab="Date", ylab="Prices", main="Timeseries Prices")
+plot(cleanData$Date, cleanData$Change, type="l", xlab="Date", ylab="Returns", main="Timeseries Returns")
+abline(h=0, col="blue")
+```
+RSI Indicator:
+```{r echo=FALSE}
+plotRSI(indicatorsParameters, cleanData)
+```
+
+Portfolio value at the end of the backtest, interest and standard deviation:
+```{r}
+portfolio$value
+interest = (portfolio$value/initialPortfolioValue-1)
+interest
+standardDeviation = sd(portfolio$valueHistory$Value)
+standardDeviation
+```
+Changes in portfolio value: 
+```{r}
+portfolio$valueHistory
+```
+
+Equity Line:
+```{r echo=FALSE}
+plot(portfolio$valueHistory$Date,portfolio$valueHistory$Value, type="l", xlab="Date", ylab="Value", main="Equity Line")
+abline(h=initialPortfolioValue, col="red")
+```
+
+Orders:
+```{r}
+portfolio$orders$openDate = as.Date(portfolio$orders$openDate, origin="1970-01-01")
+portfolio$orders$closeDate= as.Date(portfolio$orders$closeDate, origin="1970-01-01")
+portfolio$orders
+```
+Orders Analytics:
+amountOfBuyOrdersPercentage = sum(portfolio$orders$type=="BUY")/amountOfOrders
+amountOfSellOrdersPercetage = sum(portfolio$orders$type=="SELL")/amountOfOrders
+
+
+Missing values in original data:
+```{r}
+missingValues
+```
+
+## Code Explainations
+### A note on Strategy Entity and RSI Entity
+It is important to understand the structure and the usefulness of the Strategy entity.
 This entity has the purpose, as in normal Trading systems, of checking for signals and inform about the amount of data(starting the count from the day before the day considered) needed by the indicator to compute those signals.
 In fact, RSI indicator, as well as most of all Technical indicators, need a certain amount of data to create a meaningful result and not errors(for instance, an indicator that expects 14 parameters, if provided with just 6, would throw an error or an unfaithful result).
 
@@ -183,28 +241,87 @@ else{
 #[...Code...]
 ```
 
-## Backtester 
-
 ### Backtester Logic
-![chart of Backtester Logic](chart of backtester.png)
+![Chart of Backtester Logic Figure](chart of backtester.png)
+The logic of the backtester is shown in the chart above.
+It is, on a basic level, a FOR cycle that runs from the `startingPoint` of the strategy.
+The `backtestStrategy(portfolio, strategy, financialData)` function is shown below.
+```{r eval=FALSE}
+startingValue = strategy$startingPoint()+1
+  amountOfDataFromToday = strategy$amountOfDataFromToday()
+  portfolio$strategy = strategy
+
+  for (dateIndex in startingValue:nrow(financialData)) {
+    dataInputForStrategy = financialData[(dateIndex-amountOfDataFromToday):dateIndex-1,]
+    todayPrice = financialData$Price[dateIndex]
+    todayDate = financialData$Date[dateIndex]
+```
+
+The backster then will check for orders to close and check whether the portfolio has still some money inside and if not, it will stop. If it is the last day of the trading strategy, the OPEN orders will be closed and the code will stop:
+```{r eval=FALSE}
+    portfolio$checkForOrdersToClose(todayPrice, todayDate)
+    amountInPortfolio = portfolio$value
+
+    if (amountInPortfolio <=0){
+      break
+    }
+    else if (dateIndex == length(financialData$Date)){
+     portfolio$closeAllOrders(todayPrice, todayDate)
+    }
+```
+
+Moreover, if it is not the last day of trading and the portfolio has still a positive value, the Backtester will check for signals. If the signal is IDLE, which means that the strategy suggests to not trade, the backtester will move to the next trading day.
+On the contrary, if there is a BUY or SELL order, the Backtester will check whether there are open orders.
+If there are not open orders, it will create an order and add it to the orders of the portfolio.
+If the strategy gives a signal that is the same of the open order, then the position will be kept in hold (for instance, the strategy tells to BUY and there is a BUY open order).
+
+```{r eval=FALSE}
+ else {
+      #'[1) check what strategy says (buy/sell)]
+      orderType = strategy$checkForSignals(dataInputForStrategy)
+      
+      if (orderType=="IDLE"){
+        next
+      }
+
+      #'[2) check if there are orders open]
+      orderResult = portfolio$checkForOpenOrders(orderType)
+      ordersOpen = orderResult$ordersOpen
+      orderIndex = orderResult$orderIndex
+      #'[3) if no order is open, open the order]
+      if (length(ordersOpen)==0){
+        orderPlaced = createOrder(
+          openPrice=todayPrice, 
+          openDate=todayDate, 
+          type=orderType
+          )
+        portfolio$addOrder(orderPlaced)
+      }
+    #'[4) check if the order is the same of the signal]
+      else if (isOrderOfThisType(ordersOpen, orderType)){ # if true
+    #'[5) hold the order - DO NOTHING]   
+      } 
+```
+Lastly, if the order has a type contrary to the one suggested by the signals, the order will be closed and a new order coherent with the signal will be opened
+```{r eval=FALSE}
+     else if (!isOrderOfThisType(ordersOpen, orderType)){
+      #'[7) close the opposite order]
+      portfolio = portfolio$closeOrder(orderIndex,todayPrice, todayDate)
+      #'[8) open new order]
+      orderPlaced = createOrder(
+        openPrice=todayPrice, 
+        openDate=todayDate, 
+        type=orderType)
+      portfolio$addOrder(orderPlaced)
+      }
+    }
+  }
+```
+
+  
+## Order Entity: how an order is opened and closed
+
 
 
 # Scaling with New Strategies and Indicators
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

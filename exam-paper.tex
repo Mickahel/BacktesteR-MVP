@@ -1,0 +1,694 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Exam Paper - Backtester Project},
+  pdfauthor={Michelangelo De Francesco},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Exam Paper - Backtester Project}
+\author{Michelangelo De Francesco}
+\date{22/3/2021}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\hypertarget{objective}{%
+\section{Objective}\label{objective}}
+
+The objective of the project is to create a simple \textbf{backtester}
+that is able to test the performance of trading systems, given as an
+input a \texttt{CSV} downloaded from
+\href{https://www.investing.com/}{Investing USA}.
+
+\hypertarget{the-project-in-practice}{%
+\subsection{The project, in Practice}\label{the-project-in-practice}}
+
+In this project, a simple backtesting engine has been created and a
+simple strategy based on
+\href{https://www.investopedia.com/terms/r/rsi.asp}{Relative Strength
+Indicator} has been used as a practical example to show the
+effectiveness of the backtester.
+
+Regarding the RSI Strategy, it relies on simple Technical Analysis and
+on the concept of over-sold and over-bought: the strategy will stay in
+\texttt{IDLE} when the indicator is between the upper and the lower
+boundaries, while it will recommend to \texttt{BUY} or \texttt{SELL}
+when it will be respectively below the lower level and above the upper
+one.
+
+\hypertarget{notes-on-the-project}{%
+\subsection{Notes on the Project}\label{notes-on-the-project}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  It's written in vanilla R language, external packages has not been
+  used as I aimed to code everything from scratch instead of using
+  pre-built functions
+\item
+  I have made extensive use of Object Oriented Programming in R Language
+  (i.e.~\texttt{Indicators}, \texttt{Portfolio} and \texttt{Strategies}
+  are Objects, while \texttt{Orders} are rows in a \texttt{data.frame}
+  due to motivations that will be explained in the following sections)
+\end{enumerate}
+
+\hypertarget{architecture-description}{%
+\section{Architecture Description}\label{architecture-description}}
+
+The Architectural design behind this project is based on Object Oriented
+Programming, therefore, as already said, some components of the project
+are Objects created by their respective Classes.
+
+The main reason behind this choice is the need for entities from which I
+could be able to call attributes (variables associated to the entity)
+and methods. For instance, regarding the portfolio, I wanted to have an
+entity that represented the portfolio itself and from which I could have
+the value of it, but also functions such as \texttt{addOrder} or
+\texttt{closeOrder}.
+
+Object Oriented Programming is substantiated by the creation of classes,
+which in are are declared using the function \texttt{setRefClass()}
+which creates an S4 class (an updated and more complete version of the
+S3 classes as it provides the possibility to create custom functions and
+use the object itself inside the function).
+
+Thanks to the simple reproducibility of objects due to classes (in fact,
+they can be considered as blueprints of objects), I have decided to
+adopt this data type also for \texttt{Indicators} and
+\texttt{Strategies} for scalability reasons and for the motivations
+already stated.
+
+\hypertarget{note-on-architectural-decision-on-order-entity}{%
+\subsection{Note on architectural decision on Order
+Entity}\label{note-on-architectural-decision-on-order-entity}}
+
+The \texttt{Order} Entity, which represents a buy or sell order, is not
+an object although it would be eligible. The motivation is that in R
+Language, Objects can be stored in vectors, but they instantly lose
+their parameters and methods as shown below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gen <-}\StringTok{ }\KeywordTok{setRefClass}\NormalTok{(}\StringTok{"myRefClass"}\NormalTok{, }
+                   \DataTypeTok{fields=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{aa=}\StringTok{"character"}\NormalTok{),}
+                   \DataTypeTok{methods=}\KeywordTok{list}\NormalTok{(}
+                     \DataTypeTok{hi=} \ControlFlowTok{function}\NormalTok{()\{}
+                       \KeywordTok{cat}\NormalTok{(}\StringTok{"hi"}\NormalTok{)}
+\NormalTok{                     \}}
+\NormalTok{                   )}
+\NormalTok{)}
+\NormalTok{x <-}\StringTok{ }\NormalTok{gen}\OperatorTok{$}\KeywordTok{new}\NormalTok{(}\DataTypeTok{aa=}\StringTok{"nome"}\NormalTok{)}
+\NormalTok{y <-}\StringTok{ }\NormalTok{gen}\OperatorTok{$}\KeywordTok{new}\NormalTok{(}\DataTypeTok{aa=}\StringTok{"bana"}\NormalTok{)}
+\NormalTok{a<-}\KeywordTok{c}\NormalTok{(x,y)}
+
+\NormalTok{b<-a[}\DecValTok{1}\NormalTok{]}
+\NormalTok{b}\OperatorTok{$}\NormalTok{aa }\CommentTok{# NULL}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## NULL
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#b$hi() throws an error}
+\NormalTok{a[}\DecValTok{1}\NormalTok{]}\OperatorTok{$}\NormalTok{aa }\CommentTok{# NULL}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## NULL
+\end{verbatim}
+
+Nonetheless, the main idea was to store all the orders inside a vector
+of the portfolio. In order to work around the problem, it has been
+treated as a simple row in a data.frame.
+
+\hypertarget{how-to-start-the-project}{%
+\section{How to Start the Project}\label{how-to-start-the-project}}
+
+The project is already set up and it's possible to run it without any
+change: run the \texttt{init.R} code line by line or as a whole.
+
+If, instead, it is needed to change the input parameters, it is
+mandatory to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  download historical data from
+  \href{https://www.investing.com/}{Investing USA} in CSV, such as
+  \href{https://www.investing.com/equities/apple-computer-inc-historical-data}{Apple
+  Stock}
+\item
+  change in the file \texttt{init.R} the input parameters
+  a.\texttt{pathOfFinancialData}, which is the path of the
+  \texttt{.CSV}. Note: you can use both relative and absolute path.
+\end{enumerate}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  \texttt{initialPortfolioValue}, which is the amount of money in the
+  portfolio at the beginning of the simulation.
+\item
+  \texttt{percentageOfPortfolioForEachInvestment}, which is the
+  percentage of the portfolio which is invested in each trade.
+\item
+  \texttt{indicatorsParameters}: the parameters chosen for the strategy,
+  that are in this case respectively: the periods of the RSI, the lower
+  bound and the upper 60
+\end{enumerate}
+
+An example is provided below:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{path =}\StringTok{ ".}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{inputCSVData}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S&P 500 Historical Data Reversed with missing data.csv"}
+\CommentTok{# or using absolute path}
+\CommentTok{# path = "C:\textbackslash{}\textbackslash{}Users\textbackslash{}\textbackslash{}Michelangelo\textbackslash{}\textbackslash{}Desktop\textbackslash{}\textbackslash{}Projects\textbackslash{}\textbackslash{}BacktesteR-MVP\textbackslash{}\textbackslash{}inputCSVData\textbackslash{}\textbackslash{}S&P 500 Historical Data Reversed with missing data.csv"}
+\NormalTok{initialPortfolioValue =}\StringTok{ }\DecValTok{10000}
+\NormalTok{percentageOfPortfolioForEachInvestment=}\FloatTok{0.1}
+
+\NormalTok{indicatorsParameters=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{60}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+After having the parameters set, start the code in \texttt{init.R}
+line-by-line or as a whole.
+
+\hypertarget{backtester-description}{%
+\section{Backtester Description}\label{backtester-description}}
+
+In this section, it will be shown how the code works under the hood and
+will be explained the logical steps of the backtester starting from the
+first line of \texttt{init.R}.
+
+\hypertarget{initial-setup}{%
+\subsection{Initial Setup}\label{initial-setup}}
+
+A new RSI Strategy Object is created from the \texttt{singleRSIStrategy}
+Class after setting the environment and the input paramenters.
+
+It is important to not that the English language using
+\texttt{Sys.setlocale(locale\ =\ "English")} in order to parse the dates
+present inside the CSV.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{rm}\NormalTok{(}\DataTypeTok{list=}\KeywordTok{ls}\NormalTok{())}
+\KeywordTok{graphics.off}\NormalTok{()}
+\KeywordTok{Sys.setlocale}\NormalTok{(}\DataTypeTok{locale =} \StringTok{"English"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "LC_COLLATE=English_United States.1252;LC_CTYPE=English_United States.1252;LC_MONETARY=English_United States.1252;LC_NUMERIC=C;LC_TIME=English_United States.1252"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Input options}
+\NormalTok{pathOfFinancialData =}\StringTok{ ".}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{inputCSVData}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S&P 500 Historical Data Reversed with missing data.csv"}
+\NormalTok{initialPortfolioValue =}\StringTok{ }\DecValTok{10000}
+\NormalTok{percentageOfPortfolioForEachInvestment=}\FloatTok{0.1}
+\NormalTok{indicatorsParameters=}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{60}\NormalTok{)}
+
+\CommentTok{# Add paths}
+\KeywordTok{source}\NormalTok{(}\StringTok{"dataInputFunctions.R"}\NormalTok{)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"portfolioModel.R"}\NormalTok{)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"singleRSIStrategyModel.R"}\NormalTok{)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"orderFunctions.R"}\NormalTok{)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"backtest.R"}\NormalTok{)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"analytics.R"}\NormalTok{)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"./indicators/RSIModel.R"}\NormalTok{)}
+
+\NormalTok{strategy =}\StringTok{ }\NormalTok{singleRSIStrategy}\OperatorTok{$}\KeywordTok{new}\NormalTok{(); }
+\end{Highlighting}
+\end{Shaded}
+
+Then, the process of data retrieving and cleaning starts: 1. The CSV
+parsed and stored into a \texttt{data.frame} 2. The data is then cleaned
+from missing values( if in the row is present a \texttt{NA} value, the
+row is removed) and is sorted by date 3. Finally, the data is indexed
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rawData =}\StringTok{ }\KeywordTok{readDataFromCSV}\NormalTok{(pathOfFinancialData)}
+\NormalTok{dataOutput =}\StringTok{ }\KeywordTok{cleanAndValidateData}\NormalTok{(rawData)}
+\NormalTok{cleanData =}\StringTok{ }\NormalTok{dataOutput}\OperatorTok{$}\NormalTok{data}
+\NormalTok{missingValues =}\StringTok{ }\NormalTok{dataOutput}\OperatorTok{$}\NormalTok{missingValues}
+\NormalTok{missingValues}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Date  Price Change 
+##      0      3      0
+\end{verbatim}
+
+Moreover, the Portfolio is created with its initial values; valueHistory
+is a \texttt{data.frame} where the chages of the portfolio value are
+stored.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{portfolio =}\StringTok{ }\NormalTok{portfolioClassGenerator}\OperatorTok{$}\KeywordTok{new}\NormalTok{(}
+  \DataTypeTok{value=}\NormalTok{initialPortfolioValue, }
+  \DataTypeTok{orders =} \KeywordTok{data.frame}\NormalTok{(),}
+  \DataTypeTok{valueHistory =} \KeywordTok{data.frame}\NormalTok{(}
+    \DataTypeTok{Date=}\KeywordTok{c}\NormalTok{(cleanData}\OperatorTok{$}\NormalTok{Date[}\DecValTok{1}\NormalTok{]),}
+    \DataTypeTok{Value=}\KeywordTok{c}\NormalTok{(initialPortfolioValue),}
+    \DataTypeTok{Change=}\KeywordTok{c}\NormalTok{(}\OtherTok{NA}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  );}
+\end{Highlighting}
+\end{Shaded}
+
+The last step before starting the backtest consists in adding the
+parameters of the RSI to the strategy, in fact, the objective of the
+function \texttt{addIndicators(values)} is to create a RSI object (with
+input parameters the ones that has been chosen before) as a variable
+inside the strategy and use it to produce signals.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{strategy}\OperatorTok{$}\KeywordTok{addIndicators}\NormalTok{(indicatorsParameters)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{backtest}{%
+\subsection{Backtest}\label{backtest}}
+
+The backtest starts and the portfolio is returned. In this phase, orders
+and signals are computed as it will be explained in the following
+sections.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{portfolio =}\StringTok{ }\KeywordTok{backtestStrategy}\NormalTok{(portfolio, strategy, cleanData)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{output-and-analytics}{%
+\subsection{Output and Analytics}\label{output-and-analytics}}
+
+In this section, a series of output, metrics and analytics is provided
+
+Plot of price and returns of the timeseries analyzed:
+\includegraphics{exam-paper_files/figure-latex/unnamed-chunk-3-1.pdf}
+\includegraphics{exam-paper_files/figure-latex/unnamed-chunk-3-2.pdf}
+RSI Indicator:
+\includegraphics{exam-paper_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+Portfolio value at the end of the backtest, interest and standard
+deviation:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{portfolio}\OperatorTok{$}\NormalTok{value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 10009.79
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{interest =}\StringTok{ }\NormalTok{(portfolio}\OperatorTok{$}\NormalTok{value}\OperatorTok{/}\NormalTok{initialPortfolioValue}\DecValTok{-1}\NormalTok{)}
+\NormalTok{interest}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.0009791586
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{standardDeviation =}\StringTok{ }\KeywordTok{sd}\NormalTok{(portfolio}\OperatorTok{$}\NormalTok{valueHistory}\OperatorTok{$}\NormalTok{Value)}
+\NormalTok{standardDeviation}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 15.10555
+\end{verbatim}
+
+Changes in portfolio value:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{portfolio}\OperatorTok{$}\NormalTok{valueHistory}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          Date     Value        Change
+## 1  2020-07-30 10000.000            NA
+## 2  2020-08-21  9995.514 -0.0004485525
+## 3  2020-08-26  9985.323 -0.0010195666
+## 4  2020-08-28  9976.919 -0.0008416865
+## 5  2020-09-02  9961.588 -0.0015365857
+## 6  2020-09-03  9996.579  0.0035125836
+## 7  2020-09-04 10004.710  0.0008132999
+## 8  2020-09-08  9976.940 -0.0027756379
+## 9  2020-09-09  9997.039  0.0020145025
+## 10 2020-09-10  9979.459 -0.0017584791
+## 11 2020-09-14  9992.714  0.0013281664
+## 12 2020-09-17  9984.878 -0.0007840900
+## 13 2020-09-18  9973.713 -0.0011182570
+## 14 2020-09-25  9989.647  0.0015976763
+## 15 2020-09-28 10005.741  0.0016110549
+## 16 2020-10-19 10021.948  0.0016197098
+## 17 2020-10-30 10009.792 -0.0012129506
+\end{verbatim}
+
+Equity Line:
+\includegraphics{exam-paper_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+Orders:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{portfolio}\OperatorTok{$}\NormalTok{orders}\OperatorTok{$}\NormalTok{openDate =}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(portfolio}\OperatorTok{$}\NormalTok{orders}\OperatorTok{$}\NormalTok{openDate, }\DataTypeTok{origin=}\StringTok{"1970-01-01"}\NormalTok{)}
+\NormalTok{portfolio}\OperatorTok{$}\NormalTok{orders}\OperatorTok{$}\NormalTok{closeDate=}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(portfolio}\OperatorTok{$}\NormalTok{orders}\OperatorTok{$}\NormalTok{closeDate, }\DataTypeTok{origin=}\StringTok{"1970-01-01"}\NormalTok{)}
+\NormalTok{portfolio}\OperatorTok{$}\NormalTok{orders}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    openPrice   openDate closePrice  closeDate type riskRewardRatio    amount
+## 1    3381.99 2020-08-17    3397.16 2020-08-21 SELL               2 1000.0000
+## 2    3443.62 2020-08-25    3478.73 2020-08-26 SELL               2  999.5514
+## 3    3478.73 2020-08-26    3508.01 2020-08-28 SELL               2  998.5323
+## 4    3526.65 2020-09-01    3580.84 2020-09-02 SELL               2  997.6919
+## 5    3580.84 2020-09-02    3455.06 2020-09-03 SELL               2  996.1588
+## 6    3455.06 2020-09-03    3426.96 2020-09-04 SELL               2  999.6579
+## 7    3426.96 2020-09-04    3331.84 2020-09-08  BUY               2 1000.4710
+## 8    3331.84 2020-09-08    3398.96 2020-09-09  BUY               2  997.6940
+## 9    3398.96 2020-09-09    3339.19 2020-09-10  BUY               2  999.7039
+## 10   3339.19 2020-09-10    3383.54 2020-09-14  BUY               2  997.9459
+## 11   3383.54 2020-09-14    3357.01 2020-09-17  BUY               2  999.2714
+## 12   3357.01 2020-09-17    3319.47 2020-09-18  BUY               2  998.4878
+## 13   3246.59 2020-09-24    3298.46 2020-09-25  BUY               2  997.3713
+## 14   3298.46 2020-09-25    3351.60 2020-09-28  BUY               2  998.9647
+## 15   3483.34 2020-10-15    3426.92 2020-10-19 SELL               2 1000.5741
+## 16   3310.11 2020-10-29    3269.96 2020-10-30  BUY               2 1002.1948
+##    status takeProfit stopLoss profitLoss
+## 1  CLOSED   3361.698 3392.136  -4.485525
+## 2  CLOSED   3422.958 3453.951 -10.191093
+## 3  CLOSED   3457.858 3489.166  -8.404512
+## 4  CLOSED   3505.490 3537.230 -15.330391
+## 5  CLOSED   3559.355 3591.583  34.990913
+## 6  CLOSED   3434.330 3465.425   8.130217
+## 7  CLOSED   3447.522 3416.679 -27.769451
+## 8  CLOSED   3351.831 3321.844  20.098571
+## 9  CLOSED   3419.354 3388.763 -17.579583
+## 10 CLOSED   3359.225 3329.172  13.254382
+## 11 CLOSED   3403.841 3373.389  -7.835187
+## 12 CLOSED   3377.152 3346.939 -11.165660
+## 13 CLOSED   3266.070 3236.850  15.934765
+## 14 CLOSED   3318.251 3288.565  16.093870
+## 15 CLOSED   3462.440 3493.790  16.206397
+## 16 CLOSED   3329.971 3300.180 -12.156128
+\end{verbatim}
+
+Orders Analytics: amountOfBuyOrdersPercentage =
+sum(portfolio\(orders\)type==``BUY'')/amountOfOrders
+amountOfSellOrdersPercetage =
+sum(portfolio\(orders\)type==``SELL'')/amountOfOrders
+
+Missing values in original data:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{missingValues}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Date  Price Change 
+##      0      3      0
+\end{verbatim}
+
+\hypertarget{code-explainations}{%
+\subsection{Code Explainations}\label{code-explainations}}
+
+\hypertarget{a-note-on-strategy-entity-and-rsi-entity}{%
+\subsubsection{A note on Strategy Entity and RSI
+Entity}\label{a-note-on-strategy-entity-and-rsi-entity}}
+
+It is important to understand the structure and the usefulness of the
+Strategy entity. This entity has the purpose, as in normal Trading
+systems, of checking for signals and inform about the amount of
+data(starting the count from the day before the day considered) needed
+by the indicator to compute those signals. In fact, RSI indicator, as
+well as most of all Technical indicators, need a certain amount of data
+to create a meaningful result and not errors(for instance, an indicator
+that expects 14 parameters, if provided with just 6, would throw an
+error or an unfaithful result).
+
+\[
+RSI Value = 100-\frac{100}{1+\frac{Average Gain}{Average Loss}}
+\] Regarding RSI Entity, it's important,when computing its formula, to
+take into account the event by which negative or positive returns are
+not available for the data (maybe due to a strong uptrend or downtrend).
+In order to deal with this problem, the value 0 will be assigned to the
+potential void variable.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#[...Code...]}
+\ControlFlowTok{if}\NormalTok{ (}\KeywordTok{sum}\NormalTok{(returns}\OperatorTok{>=}\DecValTok{0}\NormalTok{)}\OperatorTok{==}\DecValTok{0}\NormalTok{) \{}
+\NormalTok{upReturns =}\StringTok{ }\DecValTok{0}
+\NormalTok{\}}
+\ControlFlowTok{else}\NormalTok{\{}
+\NormalTok{  upReturns =}\StringTok{ }\NormalTok{returns[returns}\OperatorTok{>=}\DecValTok{0}\NormalTok{]}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{ (}\KeywordTok{sum}\NormalTok{(returns}\OperatorTok{<}\DecValTok{0}\NormalTok{)}\OperatorTok{==}\DecValTok{0}\NormalTok{)\{}
+\NormalTok{ downReturns =}\StringTok{ }\DecValTok{0}
+\NormalTok{\}}
+\ControlFlowTok{else}\NormalTok{\{}
+\NormalTok{  downReturns =}\StringTok{ }\NormalTok{returns[returns}\OperatorTok{<}\DecValTok{0}\NormalTok{];}
+\NormalTok{\}}
+\CommentTok{#[...Code...]}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{backtester-logic}{%
+\subsubsection{Backtester Logic}\label{backtester-logic}}
+
+\includegraphics{chart of backtester.png} The logic of the backtester is
+shown in the chart above. It is, on a basic level, a FOR cycle that runs
+from the \texttt{startingPoint} of the strategy. The
+\texttt{backtestStrategy(portfolio,\ strategy,\ financialData)} function
+is shown below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{startingValue =}\StringTok{ }\NormalTok{strategy}\OperatorTok{$}\KeywordTok{startingPoint}\NormalTok{()}\OperatorTok{+}\DecValTok{1}
+\NormalTok{  amountOfDataFromToday =}\StringTok{ }\NormalTok{strategy}\OperatorTok{$}\KeywordTok{amountOfDataFromToday}\NormalTok{()}
+\NormalTok{  portfolio}\OperatorTok{$}\NormalTok{strategy =}\StringTok{ }\NormalTok{strategy}
+
+  \ControlFlowTok{for}\NormalTok{ (dateIndex }\ControlFlowTok{in}\NormalTok{ startingValue}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(financialData)) \{}
+\NormalTok{    dataInputForStrategy =}\StringTok{ }\NormalTok{financialData[(dateIndex}\OperatorTok{-}\NormalTok{amountOfDataFromToday)}\OperatorTok{:}\NormalTok{dateIndex}\DecValTok{-1}\NormalTok{,]}
+\NormalTok{    todayPrice =}\StringTok{ }\NormalTok{financialData}\OperatorTok{$}\NormalTok{Price[dateIndex]}
+\NormalTok{    todayDate =}\StringTok{ }\NormalTok{financialData}\OperatorTok{$}\NormalTok{Date[dateIndex]}
+\end{Highlighting}
+\end{Shaded}
+
+The backster then will check for orders to close and check whether the
+portfolio has still some money inside and if not, it will stop. If it is
+the last day of the trading strategy, the OPEN orders will be closed and
+the code will stop:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    portfolio}\OperatorTok{$}\KeywordTok{checkForOrdersToClose}\NormalTok{(todayPrice, todayDate)}
+\NormalTok{    amountInPortfolio =}\StringTok{ }\NormalTok{portfolio}\OperatorTok{$}\NormalTok{value}
+
+    \ControlFlowTok{if}\NormalTok{ (amountInPortfolio }\OperatorTok{<=}\DecValTok{0}\NormalTok{)\{}
+      \ControlFlowTok{break}
+\NormalTok{    \}}
+    \ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (dateIndex }\OperatorTok{==}\StringTok{ }\KeywordTok{length}\NormalTok{(financialData}\OperatorTok{$}\NormalTok{Date))\{}
+\NormalTok{     portfolio}\OperatorTok{$}\KeywordTok{closeAllOrders}\NormalTok{(todayPrice, todayDate)}
+\NormalTok{    \}}
+\end{Highlighting}
+\end{Shaded}
+
+Moreover, if it is not the last day of trading and the portfolio has
+still a positive value, the Backtester will check for signals. If the
+signal is IDLE, which means that the strategy suggests to not trade, the
+backtester will move to the next trading day. On the contrary, if there
+is a BUY or SELL order, the Backtester will check whether there are open
+orders. If there are not open orders, it will create an order and add it
+to the orders of the portfolio. If the strategy gives a signal that is
+the same of the open order, then the position will be kept in hold (for
+instance, the strategy tells to BUY and there is a BUY open order).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \ControlFlowTok{else}\NormalTok{ \{}
+      \CommentTok{#'[1) check what strategy says (buy/sell)]}
+\NormalTok{      orderType =}\StringTok{ }\NormalTok{strategy}\OperatorTok{$}\KeywordTok{checkForSignals}\NormalTok{(dataInputForStrategy)}
+      
+      \ControlFlowTok{if}\NormalTok{ (orderType}\OperatorTok{==}\StringTok{"IDLE"}\NormalTok{)\{}
+        \ControlFlowTok{next}
+\NormalTok{      \}}
+
+      \CommentTok{#'[2) check if there are orders open]}
+\NormalTok{      orderResult =}\StringTok{ }\NormalTok{portfolio}\OperatorTok{$}\KeywordTok{checkForOpenOrders}\NormalTok{(orderType)}
+\NormalTok{      ordersOpen =}\StringTok{ }\NormalTok{orderResult}\OperatorTok{$}\NormalTok{ordersOpen}
+\NormalTok{      orderIndex =}\StringTok{ }\NormalTok{orderResult}\OperatorTok{$}\NormalTok{orderIndex}
+      \CommentTok{#'[3) if no order is open, open the order]}
+      \ControlFlowTok{if}\NormalTok{ (}\KeywordTok{length}\NormalTok{(ordersOpen)}\OperatorTok{==}\DecValTok{0}\NormalTok{)\{}
+\NormalTok{        orderPlaced =}\StringTok{ }\KeywordTok{createOrder}\NormalTok{(}
+          \DataTypeTok{openPrice=}\NormalTok{todayPrice, }
+          \DataTypeTok{openDate=}\NormalTok{todayDate, }
+          \DataTypeTok{type=}\NormalTok{orderType}
+\NormalTok{          )}
+\NormalTok{        portfolio}\OperatorTok{$}\KeywordTok{addOrder}\NormalTok{(orderPlaced)}
+\NormalTok{      \}}
+    \CommentTok{#'[4) check if the order is the same of the signal]}
+      \ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\KeywordTok{isOrderOfThisType}\NormalTok{(ordersOpen, orderType))\{ }\CommentTok{# if true}
+    \CommentTok{#'[5) hold the order - DO NOTHING]   }
+\NormalTok{      \} }
+\end{Highlighting}
+\end{Shaded}
+
+Lastly, if the order has a type contrary to the one suggested by the
+signals, the order will be closed and a new order coherent with the
+signal will be opened
+
+\begin{Shaded}
+\begin{Highlighting}[]
+     \ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\KeywordTok{isOrderOfThisType}\NormalTok{(ordersOpen, orderType))\{}
+      \CommentTok{#'[7) close the opposite order]}
+\NormalTok{      portfolio =}\StringTok{ }\NormalTok{portfolio}\OperatorTok{$}\KeywordTok{closeOrder}\NormalTok{(orderIndex,todayPrice, todayDate)}
+      \CommentTok{#'[8) open new order]}
+\NormalTok{      orderPlaced =}\StringTok{ }\KeywordTok{createOrder}\NormalTok{(}
+        \DataTypeTok{openPrice=}\NormalTok{todayPrice, }
+        \DataTypeTok{openDate=}\NormalTok{todayDate, }
+        \DataTypeTok{type=}\NormalTok{orderType)}
+\NormalTok{      portfolio}\OperatorTok{$}\KeywordTok{addOrder}\NormalTok{(orderPlaced)}
+\NormalTok{      \}}
+    \ErrorTok{\}}
+  \ErrorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{order-entity-how-an-order-is-opened-and-closed}{%
+\subsection{Order Entity: how an order is opened and
+closed}\label{order-entity-how-an-order-is-opened-and-closed}}
+
+\hypertarget{scaling-with-new-strategies-and-indicators}{%
+\section{Scaling with New Strategies and
+Indicators}\label{scaling-with-new-strategies-and-indicators}}
+
+\end{document}

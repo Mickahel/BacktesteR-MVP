@@ -4,8 +4,8 @@ graphics.off()
 Sys.setlocale(locale = "English")
 
 # Input options
-#path = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
-path = ".\\inputCSVData\\AAPL Historical Data.csv"
+pathOfFinancialData = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
+#path = ".\\inputCSVData\\AAPL Historical Data.csv"
 initialPortfolioValue = 10000
 percentageOfPortfolioForEachInvestment=0.1
 
@@ -24,7 +24,7 @@ source("./indicators/RSIModel.R")
 #  strategy
 strategy = singleRSIStrategy$new(); 
 # data input from CSV, InvestingUSA
-rawData = readDataFromCSV(path)
+rawData = readDataFromCSV(pathOfFinancialData)
 
 
 # Data validation
@@ -55,17 +55,29 @@ strategy$addIndicators(indicatorsParameters)
 
 
 portfolio = backtestStrategy(portfolio, strategy, cleanData)
+plot(cleanData$Date, cleanData$Price, type="l", xlab="Date", ylab="Prices", main="Timeseries Prices")
+plot(cleanData$Date, cleanData$Change, type="l", xlab="Date", ylab="Returns", main="Timeseries Returns")
+abline(h=0, col="blue")
 plotRSI(indicatorsParameters, cleanData)
 portfolio$value
+interest = (portfolio$value/initialPortfolioValue-1)
+standardDeviation = sd(portfolio$valueHistory$Value)
+plot(portfolio$valueHistory$Date,portfolio$valueHistory$Value, type="l", xlab="Date", ylab="Value", main="Equity Line")
+abline(h=initialPortfolioValue, col="red")
+portfolio$orders$openDate = as.Date(a$openDate, origin="1970-01-01")
+portfolio$orders$closeDate= as.Date(a$closeDate, origin="1970-01-01")
 portfolio$orders
-portfolio$valueHistory
+amountOfOrders = nrow(portfolio$orders)
+
+amountOfBuyOrdersPercentage = sum(portfolio$orders$type=="BUY")/amountOfOrders
+amountOfSellOrdersPercetage = sum(portfolio$orders$type=="SELL")/amountOfOrders
 missingValues
-# Analysis of the data of the backtest
-# TODO portfolio$analytics = analyticsModel(portfolio);
 
 
-# output excel
+#output
+write.csv(portfolio$orders,".\\output\\orders.csv", row.names = TRUE)
+write.csv(portfolio$valueHistory,".\\output\\historyValue.csv", row.names = TRUE)
 
-# output PDF
+
 
 

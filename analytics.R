@@ -15,7 +15,8 @@ plotRSI = function(inputParameters, financialData){
     rsiValues= c(rsiValues, rsiValue)
   }
 
-   plot(financialData$Date[startingValue:length(financialData$Date)],rsiValues, xlab="Date", type="l", ylim=c(1,100))
+   #plot(financialData$Date[startingValue:length(financialData$Date)],rsiValues, xlab="Date",ylab="RSI Value", type="l", ylim=c(1,100), main="RSI Indicator from Starting Point")
+   plot(financialData$Date,c(seq(0, 0, length.out=startingValue-1), rsiValues), xlab="Date",ylab="RSI Value", type="l", ylim=c(1,100), main="RSI Indicator from Starting Point")
    abline(h=RSIIndicator$upperBand, col="blue")
    abline(h=RSIIndicator$lowerBand, col="blue")
 }
