@@ -41,6 +41,8 @@ singleRSIStrategy = setRefClass("singleRSIStrategy",
                                       rsiValue = .self$RSI$calculateRSI(dataInputForStrategy)
                                       rsiValues= c(rsiValues, rsiValue)
                                     }
+                                    #par(mfrow=c(2,1))
+                                    #plot(cleanData$Date,cleanData$Price, xlab="Date",ylab="RSI Value", type="l", main="Timeseries")
                                     plot(cleanData$Date,c(seq(0, 0, length.out=startingValue-1), rsiValues), xlab="Date",ylab="RSI Value", type="l", ylim=c(1,100), main="RSI Indicator from Starting Point")
                                     abline(h=.self$RSI$upperBand, col="blue")
                                     abline(h=.self$RSI$lowerBand, col="blue") 

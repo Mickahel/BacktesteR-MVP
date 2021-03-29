@@ -20,8 +20,8 @@ source("analytics.R")
 source("./indicators/RSIModel.R")
 source("./indicators/BollingerBandsModel.R")
 #  strategy
-strategy = singleRSIStrategy$new(); 
-#strategy = bollingerBandsStrategy$new();
+strategy = singleRSIStrategy$new() 
+#strategy = bollingerBandsStrategy$new()
 # data input from CSV, InvestingUSA
 rawData = readDataFromCSV(pathOfFinancialData)
 # Data validation
@@ -37,7 +37,7 @@ portfolio = portfolioClassGenerator$new(
     Value=c(initialPortfolioValue),
     Change=c(NA)
     )
-  );
+  )
 # backtest
 strategy$addIndicators(indicatorsParameters)
 # analytics
@@ -54,7 +54,7 @@ standardDeviation
 plot(portfolio$valueHistory$Date,portfolio$valueHistory$Value, type="l", xlab="Date", ylab="Value", main="Equity Line")
 abline(h=initialPortfolioValue, col="red")
 plotDrawdown(portfolio$valueHistory, initialPortfolioValue)
-plotRollingSharpe(portfolio$valueHistory, initialPortfolioValue)
+plotRollingSharpe(portfolio$valueHistory,cleanData, initialPortfolioValue)
 portfolio$orders$openDate = as.Date(portfolio$orders$openDate, origin="1970-01-01")
 portfolio$orders$closeDate= as.Date(portfolio$orders$closeDate, origin="1970-01-01")
 portfolio$orders
@@ -63,7 +63,7 @@ amountOfOrders
 amountOfBuyOrdersPercentage = sum(portfolio$orders$type=="BUY")/amountOfOrders
 amountOfBuyOrdersPercentage
 amountOfSellOrdersPercetage = sum(portfolio$orders$type=="SELL")/amountOfOrders
-amountOfSellOrdersPercetage
+amountOfSellOrdersPercetages
 missingValues
 #output
 write.table(portfolio$orders, file = ".\\output\\orders.csv", append = FALSE, quote = TRUE, sep = ";",

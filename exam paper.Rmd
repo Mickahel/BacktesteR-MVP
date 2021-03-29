@@ -129,11 +129,13 @@ indicatorsParameters= c(8, 40, 60)
 # Add paths
 source("dataInputFunctions.R")
 source("portfolioModel.R")
-source("singleRSIStrategyModel.R")
+source("strategies/singleRSIStrategyModel.R")
+source("strategies/bollingerBandsStrategyModel.R")
 source("orderFunctions.R")
 source("backtest.R")
 source("analytics.R")
 source("./indicators/RSIModel.R")
+source("./indicators/BollingerBandsModel.R")
 
 strategy = singleRSIStrategy$new(); 
 ```
@@ -179,20 +181,25 @@ portfolio = backtestStrategy(portfolio, strategy, cleanData)
 ```
 
 ## Output and Analytics
+
 In this section, a series of output, metrics and analytics is provided
 
 Plot of price and returns of the timeseries analyzed:
+
 ```{r echo=FALSE}
 plot(cleanData$Date, cleanData$Price, type="l", xlab="Date", ylab="Prices", main="Timeseries Prices")
-plot(cleanData$Date, cleanData$Change, type="l", xlab="Date", ylab="Returns", main="Timeseries Returns")
+plot(cleanData$Date, cleanData$Change, type="h", xlab="Date", ylab="Returns", main="Timeseries Returns")
 abline(h=0, col="blue")
 ```
+
 RSI Indicator:
+
 ```{r echo=FALSE}
-plotRSI(indicatorsParameters, cleanData)
+strategy$plotIndicators(cleanData)
 ```
 
 Portfolio value at the end of the backtest, interest and standard deviation:
+
 ```{r}
 portfolio$value
 interest = (portfolio$value/initialPortfolioValue-1)
@@ -200,19 +207,71 @@ interest
 standardDeviation = sd(portfolio$valueHistory$Value)
 standardDeviation
 ```
-Changes in portfolio value: 
+
+Changes in portfolio value:
+
 ```{r}
 portfolio$valueHistory
 ```
 
 Equity Line:
+
 ```{r echo=FALSE}
 plot(portfolio$valueHistory$Date,portfolio$valueHistory$Value, type="l", xlab="Date", ylab="Value", main="Equity Line")
 abline(h=initialPortfolioValue, col="red")
 ```
 
+Drawdown:
+
+```{r echo=FALSE}
+plotDrawdown(portfolio$valueHistory, initialPortfolioValue)
+```
+
+Rolling sharpe Ratio:
+
+```{r echo=FALSE}
+plotRollingSharpe(portfolio$valueHistory,cleanData, initialPortfolioValue)
+```
+
+calculated in a simpler way by assuming the risk free rate equals to 0
+
+$$
+RollingSharpe_t = \frac{Interest_t}{\sigma_t}
+$$
+
+Portfolio Orders:
+
+```{r}
+portfolio$orders$openDate = as.Date(portfolio$orders$openDate, origin="1970-01-01")
+portfolio$orders$closeDate= as.Date(portfolio$orders$closeDate, origin="1970-01-01")
+portfolio$orders
+```
+
+Amount of Orders:
+
+```{r}
+amountOfOrders = nrow(portfolio$orders)
+amountOfOrders
+```
+Amount Of Buy Orders Percentage:
+```{r}
+amountOfBuyOrdersPercentage = sum(portfolio$orders$type=="BUY")/amountOfOrders
+amountOfBuyOrdersPercentage
+```
+Amount Of Sell Orders Percentage:
+```{r}
+amountOfSellOrdersPercetage = sum(portfolio$orders$type=="SELL")/amountOfOrders
+amountOfSellOrdersPercetage
+```
+Missing Values in Data
+```{r}
+missingValues
+```
+
+The output in CSV are skipped.
 
 ## Code Explainations
+
 ### A note on Strategy Entity and RSI Entity
 It is important to understand the structure and the usefulness of the Strategy entity.
 This entity has the purpose, as in normal Trading systems, of checking for signals and inform about the amount of data(starting the count from the day before the day considered) needed by the indicator to compute those signals.
@@ -318,10 +377,85 @@ Lastly, if the order has a type contrary to the one suggested by the signals, th
   }
 ```
 
-  
-## Order Entity: how an order is opened and closed
-
-
 
 # Scaling with New Strategies and Indicators
+The project is made to scale: if there is the need to add new Strategies or Indicators, it will be easy as the above mentioned entities are `Objects of Classes`.
+
+In order to create new indicators, it will be needed to create a class with the following mandatory parameters and methods: `amountOfDataFromToday`
+
+In order to create new Strategies, it will be needed to create a class with the following mandatory parameters and methods:
+`addIndicators()`, `checkForSignals()`, `startingPoint()`, `amountOfDataFromToday()`,
+`plotIndicators()`
+
+## An Example With Bollinger Bands
+
+
+A practical example consists in the creation of a new strategy: the classical Bollinger Bands strategy ith 8 periods with 6 years of Coca-Cola Historical Data.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+pathOfFinancialData = ".\\inputCSVData\\KO Historical Data.csv"
+strategy = bollingerBandsStrategy$new()
+rawData = readDataFromCSV(pathOfFinancialData)
+# Data validation
+dataOutput = cleanAndValidateData(rawData)
+cleanData = dataOutput$data
+missingValues = dataOutput$missingValues
+# Creation of the Portfolio
+portfolio = portfolioClassGenerator$new(
+  value=initialPortfolioValue, 
+  orders = data.frame(),
+  valueHistory = data.frame(
+    Date=c(cleanData$Date[1]),
+    Value=c(initialPortfolioValue),
+    Change=c(NA)
+    )
+  )
+# backtest
+strategy$addIndicators(indicatorsParameters)
+# analytics
+portfolio = backtestStrategy(portfolio, strategy, cleanData)
+```
+
+Plot of price and returns of the timeseries analyzed:
+
+```{r echo=FALSE}
+plot(cleanData$Date, cleanData$Price, type="l", xlab="Date", ylab="Prices", main="Timeseries Prices")
+plot(cleanData$Date, cleanData$Change, type="l", xlab="Date", ylab="Returns", main="Timeseries Returns")
+abline(h=0, col="blue")
+```
+
+Bollinger Bands Indicator:
+
+```{r echo=FALSE}
+strategy$plotIndicators(cleanData)
+```
+
+Portfolio value at the end of the backtest, interest and standard deviation:
+
+```{r}
+portfolio$value
+interest = (portfolio$value/initialPortfolioValue-1)
+interest
+standardDeviation = sd(portfolio$valueHistory$Value)
+standardDeviation
+```
+
+Equity Line:
+
+```{r echo=FALSE}
+plot(portfolio$valueHistory$Date,portfolio$valueHistory$Value, type="l", xlab="Date", ylab="Value", main="Equity Line")
+abline(h=initialPortfolioValue, col="red")
+```
+
+Drawdown:
+
+```{r echo=FALSE}
+plotDrawdown(portfolio$valueHistory, initialPortfolioValue)
+```
+
+Rolling sharpe Ratio:
+
+```{r echo=FALSE}
+plotRollingSharpe(portfolio$valueHistory,cleanData, initialPortfolioValue)
+```
 
