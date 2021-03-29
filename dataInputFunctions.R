@@ -10,7 +10,7 @@ readDataFromCSV = function(path){
     #stringsAsFactors = T
     )
   
-  data  = data[c("Date", "Price", "Change")]
+  data  = data[c("Date", "Price",   "Open",   "High",   "Low","Change")]
   return(data)
 }
 
@@ -23,9 +23,11 @@ cleanAndValidateData = function(data){
     )
   data = na.omit(data)
 
-
   data$Date = as.Date(data$Date, format = "%b %d, %Y")
   data$Price = as.double(gsub(",","",data$Price))
+  data$High = as.double(gsub(",","",data$High))
+  data$Low = as.double(gsub(",","",data$Low))
+  data$High = as.double(gsub(",","",data$High))
   data$Change = as.double(gsub("%","",data$Change))
   data = data[order(data$Date),]
   rownames(data) = 1:nrow(data)

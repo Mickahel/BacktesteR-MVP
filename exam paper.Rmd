@@ -90,6 +90,21 @@ indicatorsParameters= c(8, 40, 60)
 
 After having the parameters set, start the code in `init.R` line-by-line or as a whole.
 
+## Errors in starting the code
+
+If you are trying to run the code of `init.R` and R throws errors while reading the `source("file.r")` such as:
+```{r eval=FALSE}
+ source("dataInputFunctions.R")
+Error in file(filename, "r", encoding = encoding) : 
+  non posso aprire questa connessione
+Inoltre: Warning message:
+In file(filename, "r", encoding = encoding) :
+  cannot open file 'dataInputFunctions.R': No such file or directory
+```
+then try to set the working directory as the one of the project with `setwd(folder)` manually, such as:
+```{r eval=FALSE}
+setwd("C:\\Users\\Michelangelo\\Desktop\\Projects\\BacktesteR-MVP")
+```
 # Backtester Description
 
 In this section, it will be shown how the code works under the hood and will be explained the logical steps of the backtester starting from the first line of `init.R`.
@@ -104,7 +119,7 @@ It is important to not that the English language using `Sys.setlocale(locale = "
 rm(list=ls())
 graphics.off()
 Sys.setlocale(locale = "English")
-
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 # Input options
 pathOfFinancialData = ".\\inputCSVData\\S&P 500 Historical Data Reversed with missing data.csv"
 initialPortfolioValue = 10000
@@ -196,21 +211,6 @@ plot(portfolio$valueHistory$Date,portfolio$valueHistory$Value, type="l", xlab="D
 abline(h=initialPortfolioValue, col="red")
 ```
 
-Orders:
-```{r}
-portfolio$orders$openDate = as.Date(portfolio$orders$openDate, origin="1970-01-01")
-portfolio$orders$closeDate= as.Date(portfolio$orders$closeDate, origin="1970-01-01")
-portfolio$orders
-```
-Orders Analytics:
-amountOfBuyOrdersPercentage = sum(portfolio$orders$type=="BUY")/amountOfOrders
-amountOfSellOrdersPercetage = sum(portfolio$orders$type=="SELL")/amountOfOrders
-
-
-Missing values in original data:
-```{r}
-missingValues
-```
 
 ## Code Explainations
 ### A note on Strategy Entity and RSI Entity

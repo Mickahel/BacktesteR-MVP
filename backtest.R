@@ -20,6 +20,7 @@ backtestStrategy = function (portfolio, strategy, financialData){
     #in the last day, close all orders that are open at the close price
     else if (dateIndex == length(financialData$Date)){
      portfolio$closeAllOrders(todayPrice, todayDate)
+      break
     }
     else {
       #'[1) check what strategy says (buy/sell)]

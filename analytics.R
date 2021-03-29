@@ -1,22 +1,21 @@
-plotRSI = function(inputParameters, financialData){
-  RSIIndicator =  RSIClassGenerator$new(
-    periods = indicatorsParameters[1],
-    amountOfDataFromToday = indicatorsParameters[1],
-    lowerBand = indicatorsParameters[2],
-    upperBand = indicatorsParameters[3]
-  )
-  rsiValues = c()
+plotDrawdown= function(portf, initialPortfolioValue){
+  values = lapply(portf$Value, function(x){
+    return(ifelse(x>=initialPortfolioValue,1,x/initialPortfolioValue))
+  }) 
   
-  startingValue = RSIIndicator$amountOfDataFromToday+1
-  amountOfDataFromToday = RSIIndicator$amountOfDataFromToday
-  for(dateIndex in startingValue:nrow(financialData)){
-    dataInputForStrategy = financialData[(dateIndex-amountOfDataFromToday):dateIndex-1,]
-    rsiValue = RSIIndicator$calculateRSI(dataInputForStrategy)
-    rsiValues= c(rsiValues, rsiValue)
-  }
+  plot(portf$Date, values,type="l", xlab="Date", ylab="Drawdown %", main="Drawdown")
+}
 
-   #plot(financialData$Date[startingValue:length(financialData$Date)],rsiValues, xlab="Date",ylab="RSI Value", type="l", ylim=c(1,100), main="RSI Indicator from Starting Point")
-   plot(financialData$Date,c(seq(0, 0, length.out=startingValue-1), rsiValues), xlab="Date",ylab="RSI Value", type="l", ylim=c(1,100), main="RSI Indicator from Starting Point")
-   abline(h=RSIIndicator$upperBand, col="blue")
-   abline(h=RSIIndicator$lowerBand, col="blue")
+
+plotRollingSharpe = function(data,initialPortfolioValue){
+  values = c()
+  for (dateIndex in 2:length(data$Value)){
+    d = data$Value[2:dateIndex]
+    d2 = data$Value[dateIndex]
+    r = (d2-initialPortfolioValue)/initialPortfolioValue
+    sd =  sd(d)   
+    values = c(values, r/sd)
+  }
+  plot(data$Date[2:length(data$Date)], values,type="l", xlab="Date", ylab="Sharpe value", main="Rolling Sharpe")
+  abline(h=0, col="blue")
 }

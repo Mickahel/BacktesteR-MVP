@@ -11,7 +11,10 @@ portfolioClassGenerator = setRefClass("portfolioClass",
                          if (nrow(.self$orders)>0){
                            for (ordersIndex in 1: nrow(.self$orders)){
                              if (.self$orders[ordersIndex,]$status =="OPEN"){
-                              .self$closeOrder(ordersIndex, price,date)
+                               #if(.self$orders[ordersIndex,]$openPrice==52.02){
+                              # browser()
+                               #}
+                              .self$closeOrder(ordersIndex, todayPrice,todayDate)
                              }
                            }
                          }
