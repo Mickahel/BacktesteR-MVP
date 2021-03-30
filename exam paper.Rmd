@@ -393,6 +393,7 @@ In order to create new Strategies, it will be needed to create a class with the 
 
 
 A practical example consists in the creation of a new strategy: the classical Bollinger Bands strategy witht the same Historical Data.
+The bollinger bands have as input parameter 3 periods.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 strategy = bollingerBandsStrategy$new()
@@ -418,7 +419,7 @@ Plot of price and returns of the timeseries analyzed:
 
 ```{r echo=FALSE}
 plot(cleanData$Date, cleanData$Price, type="l", xlab="Date", ylab="Prices", main="Timeseries Prices")
-plot(cleanData$Date, cleanData$Change, type="l", xlab="Date", ylab="Returns", main="Timeseries Returns")
+plot(cleanData$Date, cleanData$Change, type="h", xlab="Date", ylab="Returns", main="Timeseries Returns")
 abline(h=0, col="blue")
 ```
 

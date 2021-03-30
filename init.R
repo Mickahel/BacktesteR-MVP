@@ -63,7 +63,7 @@ amountOfOrders
 amountOfBuyOrdersPercentage = sum(portfolio$orders$type=="BUY")/amountOfOrders
 amountOfBuyOrdersPercentage
 amountOfSellOrdersPercetage = sum(portfolio$orders$type=="SELL")/amountOfOrders
-amountOfSellOrdersPercetages
+amountOfSellOrdersPercetage
 missingValues
 #output
 write.table(portfolio$orders, file = ".\\output\\orders.csv", append = FALSE, quote = TRUE, sep = ";",

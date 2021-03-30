@@ -3,7 +3,6 @@ portfolioClassGenerator = setRefClass("portfolioClass",
                      value="numeric",
                      valueHistory="ANY",
                      orders="ANY",
-                     analytics="ANY",
                      strategy="ANY"
                    ),
                    methods = list(
