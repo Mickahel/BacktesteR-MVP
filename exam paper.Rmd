@@ -302,6 +302,8 @@ else{
 
 ### Backtester Logic
 ![Chart of Backtester Logic Figure](chart of backtester.png)
+
+
 The logic of the backtester is shown in the chart above.
 It is, on a basic level, a FOR cycle that runs from the `startingPoint` of the strategy.
 The `backtestStrategy(portfolio, strategy, financialData)` function is shown below.
@@ -394,6 +396,7 @@ A practical example consists in the creation of a new strategy: the classical Bo
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 strategy = bollingerBandsStrategy$new()
+indicatorsParameters= c(3)
 rawData = readDataFromCSV(pathOfFinancialData)
 # Creation of the Portfolio
 portfolio = portfolioClassGenerator$new(
