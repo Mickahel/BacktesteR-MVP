@@ -390,16 +390,11 @@ In order to create new Strategies, it will be needed to create a class with the 
 ## An Example With Bollinger Bands
 
 
-A practical example consists in the creation of a new strategy: the classical Bollinger Bands strategy ith 8 periods with 6 years of Coca-Cola Historical Data.
+A practical example consists in the creation of a new strategy: the classical Bollinger Bands strategy witht the same Historical Data.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-pathOfFinancialData = ".\\inputCSVData\\KO Historical Data.csv"
 strategy = bollingerBandsStrategy$new()
 rawData = readDataFromCSV(pathOfFinancialData)
-# Data validation
-dataOutput = cleanAndValidateData(rawData)
-cleanData = dataOutput$data
-missingValues = dataOutput$missingValues
 # Creation of the Portfolio
 portfolio = portfolioClassGenerator$new(
   value=initialPortfolioValue, 
